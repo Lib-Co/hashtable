@@ -16,7 +16,7 @@ struct LinkedList
 
 struct HashTable
 {
-    unsigned int size;
+    int size;
     struct LinkedList *hashtable;
     //struct Name *hashtable[TABLESIZE];
     //int HashTable[TABLESIZE];
@@ -26,9 +26,9 @@ void createHashTable(int, struct HashTable *);
 
 int asciiValue(char [], int);
 
-int hashKey(int , char[]); 
+int hashKey(char[], struct HashTable *); 
 
-void addToHashTable(int, char[], struct Node *);
+void addToHashTable(char[], struct HashTable *);
 
 struct Node *addName(char [], struct Node *);
 
