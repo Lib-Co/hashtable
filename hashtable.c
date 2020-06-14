@@ -31,11 +31,12 @@ int asciiValue(char v[], int i)
     }
 };
 
-// //Hashing functionality
-int hashKey(int size, char v[])
+//Create hash index value by calculating sum % hashtable size
+int hashKey(char v[], struct HashTable *ht)
 {
     if (v != NULL)
     {
+        int size = ht->size;
         int sum;
         sum = asciiValue(v, 0);
         int hk = sum % size;
@@ -43,18 +44,16 @@ int hashKey(int size, char v[])
         return hk;
     }
     return 0;
-    //Create hashKey value by calculating sum % hashtable size
 }
 
-void addToHashTable(int size, char v[], struct Node *head)
+void addToHashTable(char v[], struct HashTable *ht)
 {
+    struct Node *head;
     if (v != NULL)
     {
-        int hk = hashKey(size, v);
-        // if (ht->hashtable[hk].head != NULL)
-        // {
-        //    add
-        // }
+        int hk = hashKey(v, ht);
+        //Use add to end of linked list logic
+        add(v, &(ht->hashtable[hk]));
     }
 }
 //Create a node for each name added
@@ -62,7 +61,7 @@ struct Node *addName(char v[], struct Node *head)
 {
     if (head == NULL)
     {
-        struct Node *n = (struct Node *)malloc(strlen(v));
+        struct Node *n = (struct Node *)malloc(sizeof(struct Node));
         strcpy(n->value, v);
         n->next = NULL;
         return n;
@@ -89,20 +88,9 @@ struct Node *removeLastName(struct Node *head)
 }
 
 //Add names to linked list
-void add(char v[], struct LinkedList *list)
+void addToLinkedList(char v[], struct LinkedList *list)
 {
-    if (list->head == NULL)
-    {
-
-        struct Node *h = (struct Node *)malloc(strlen(v));
-        strcpy(h->value, v);
-        h->next = NULL;
-        list->head = h;
-    }
-    else
-    {
-        addName(v, list->head);
-    }
+    addName(v, list->head);
 }
 
 void removeLast(struct LinkedList *list)
@@ -143,10 +131,10 @@ int main(void)
     createHashTable(size, ht);
     struct LinkedList list;
     list.head = NULL;
-    add("Emma", &list);
-    printLinkedList(list.head);
-    add("Lucy", &list);
-    printLinkedList(list.head);
+    addToHashTable("Emma", ht);
+    addToHashTable("Lucy", ht);
+    addToHashTable("Matt", ht);
+    //printLinkedList(list.head);
     // add("Evie", &list);
     // printLinkedList(list.head);
     // add("Cat", &list);
