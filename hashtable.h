@@ -18,8 +18,6 @@ struct HashTable
 {
     int size;
     struct LinkedList *hashtable;
-    //struct Name *hashtable[TABLESIZE];
-    //int HashTable[TABLESIZE];
 };
 
 void createHashTable(int, struct HashTable *);
@@ -40,6 +38,6 @@ void removeLast(struct LinkedList *);
 
 void printLinkedList(struct Node *);
 
-int searchNames(struct Node *);
+int searchNames(char v[], struct HashTable *);
 
 #endif

@@ -40,7 +40,7 @@ int hashKey(char v[], struct HashTable *ht)
         int sum;
         sum = asciiValue(v, 0);
         int hk = sum % size;
-        printf("%d ", hk);
+        //printf("%d ", hk);
         return hk;
     }
     return 0;
@@ -52,7 +52,7 @@ void addToHashTable(char v[], struct HashTable *ht)
     if (v != NULL)
     {
         int hk = hashKey(v, ht);
-        //Use add to end of linked list logic
+        //Add node to end of linked list
         addToLinkedList(v, &(ht->hashtable[hk]));
     }
 }
@@ -90,7 +90,7 @@ struct Node *removeLastName(struct Node *head)
 //Add names to linked list
 void addToLinkedList(char v[], struct LinkedList *list)
 {
-    addName(v, list->head);
+    list->head = addName(v, list->head);
 }
 
 void removeLast(struct LinkedList *list)
@@ -118,9 +118,34 @@ void printLinkedList(struct Node *name)
     }
 }
 
-int searchNames(struct Node *name)
+int searchNames(char v[], struct HashTable *ht)
 {
+
     //Check if name exists in the hash table
+    if (v != NULL)
+    {
+        int hk = hashKey(v, ht);
+        struct LinkedList ll = ht->hashtable[hk];
+        struct Node *head = ll.head;
+
+        while (head != NULL)
+        {
+            //Check that value is equal to v
+            if (strcmp(head->value, v) == 0)
+            {
+                printf("%s: Exists\n", v);
+                return 1;
+            }
+            
+            head = head->next;
+        }
+
+        //Iterate through LinkedList to check if value exists
+        //return false;
+        //current = current->next
+    }
+
+    printf("%s: Does not exist\n", v);
     return 0;
 }
 
@@ -129,11 +154,13 @@ int main(void)
     struct HashTable *ht = malloc(sizeof(struct HashTable));
     int size = 100;
     createHashTable(size, ht);
-
+    addToHashTable("A", ht);
     addToHashTable("Emma", ht);
     addToHashTable("Lucy", ht);
     addToHashTable("Matt", ht);
-    //printLinkedList(list.head);
+    searchNames("A", ht);
+    searchNames("Emma", ht);
+    searchNames("Rach", ht);
     // add("Evie", &list);
     // printLinkedList(list.head);
     // add("Cat", &list);
