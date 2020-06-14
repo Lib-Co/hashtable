@@ -1,35 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAX 15
-#define TABLESIZE 100
+#include "hashtable.h"
 
-struct Name
+//Create HashTable
+void createHashTable(int size, struct HashTable *ht)
 {
-    //int key;
-    char value[MAX];
-    struct Name *next;
-};
+    if (size < 1)
+        return;
+    ht->size = size;
+    ht->hashtable = malloc(sizeof(struct LinkedList) * size);
 
-struct LinkedList
-{
-    struct Name *head;
-};
+    int i;
+    for (int i = 0; i < size; i++)
+    {
+        ht->hashtable[i].head = NULL;
+    }
+}
 
-struct HashTable
-{
-    int size;
-    struct Name HashTable[TABLESIZE];
-};
-
-struct HashKey
-{
-    int hashKey;
-    struct HashTable index;
-};
-
-
-//Caluculate ASCII value of all characters in a string
+//Calculate ASCII value of all characters in a string
 int asciiValue(char v[], int i)
 {
     if (i < strlen(v))
@@ -40,27 +29,40 @@ int asciiValue(char v[], int i)
     {
         return 0;
     }
-}
+};
 
 // //Hashing functionality
-void hashKey(char v[])
+int hashKey(int size, char v[])
 {
     if (v != NULL)
     {
         int sum;
         sum = asciiValue(v, 0);
-        printf("%d ", sum);
+        int hk = sum % size;
+        printf("%d ", hk);
+        return hk;
     }
-
+    return 0;
+    //Create hashKey value by calculating sum % hashtable size
 }
 
-
+void addToHashTable(int size, char v[], struct Node *head)
+{
+    if (v != NULL)
+    {
+        int hk = hashKey(size, v);
+        // if (ht->hashtable[hk].head != NULL)
+        // {
+        //    add
+        // }
+    }
+}
 //Create a node for each name added
-struct Name *addName(char v[], struct Name *head)
+struct Node *addName(char v[], struct Node *head)
 {
     if (head == NULL)
     {
-        struct Name *n = (struct Name *)malloc(strlen(v));
+        struct Node *n = (struct Node *)malloc(strlen(v));
         strcpy(n->value, v);
         n->next = NULL;
         return n;
@@ -72,7 +74,7 @@ struct Name *addName(char v[], struct Name *head)
     }
 }
 
-struct Name *removeLastName(struct Name *head)
+struct Node *removeLastName(struct Node *head)
 {
     if (head->next == NULL)
     {
@@ -89,11 +91,10 @@ struct Name *removeLastName(struct Name *head)
 //Add names to linked list
 void add(char v[], struct LinkedList *list)
 {
-    hashKey(v);
     if (list->head == NULL)
     {
 
-        struct Name *h = (struct Name *)malloc(strlen(v));
+        struct Node *h = (struct Node *)malloc(strlen(v));
         strcpy(h->value, v);
         h->next = NULL;
         list->head = h;
@@ -116,7 +117,7 @@ void removeLast(struct LinkedList *list)
     }
 }
 
-void printLinkedList(struct Name *name)
+void printLinkedList(struct Node *name)
 {
     if (name == NULL)
     {
@@ -129,7 +130,7 @@ void printLinkedList(struct Name *name)
     }
 }
 
-int searchNames(struct Name *name)
+int searchNames(struct Node *name)
 {
     //Check if name exists in the hash table
     return 0;
@@ -137,6 +138,9 @@ int searchNames(struct Name *name)
 
 int main(void)
 {
+    struct HashTable *ht = malloc(sizeof(struct HashTable));
+    int size = 100;
+    createHashTable(size, ht);
     struct LinkedList list;
     list.head = NULL;
     add("Emma", &list);
