@@ -34,7 +34,7 @@ struct Node *addName(char [], struct Node *);
 
 struct Node *removeLastName(struct Node *);
 
-void add(char [], struct LinkedList *);
+void addToLinkedList(char [], struct LinkedList *);
 
 void removeLast(struct LinkedList *);
 

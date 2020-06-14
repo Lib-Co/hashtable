@@ -53,7 +53,7 @@ void addToHashTable(char v[], struct HashTable *ht)
     {
         int hk = hashKey(v, ht);
         //Use add to end of linked list logic
-        add(v, &(ht->hashtable[hk]));
+        addToLinkedList(v, &(ht->hashtable[hk]));
     }
 }
 //Create a node for each name added
@@ -129,8 +129,7 @@ int main(void)
     struct HashTable *ht = malloc(sizeof(struct HashTable));
     int size = 100;
     createHashTable(size, ht);
-    struct LinkedList list;
-    list.head = NULL;
+
     addToHashTable("Emma", ht);
     addToHashTable("Lucy", ht);
     addToHashTable("Matt", ht);
