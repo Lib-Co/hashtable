@@ -24,19 +24,19 @@ void createHashTable(int, struct HashTable *);
 
 int asciiValue(char [], int);
 
-int hashKey(char[], struct HashTable *); 
+int hashKey(char[], int); 
 
 void addToHashTable(char[], struct HashTable *);
 
 struct Node *addName(char [], struct Node *);
 
-struct Node *removeLastName(struct Node *);
-
 void addToLinkedList(char [], struct LinkedList *);
 
-void removeLast(struct LinkedList *);
+void removeFromHashTable(char [], struct HashTable *);
 
-void printLinkedList(struct Node *);
+void removeFromLinkedList(char [], struct LinkedList *);
+
+struct Node * removeName(char [], struct Node *);
 
 int searchNames(char v[], struct HashTable *);
 

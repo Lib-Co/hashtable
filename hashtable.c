@@ -32,13 +32,11 @@ int asciiValue(char v[], int i)
 };
 
 //Create hash index value by calculating sum % hashtable size
-int hashKey(char v[], struct HashTable *ht)
+int hashKey(char v[], int size)
 {
     if (v != NULL)
     {
-        int size = ht->size;
-        int sum;
-        sum = asciiValue(v, 0);
+        int sum = asciiValue(v, 0);
         int hk = sum % size;
         //printf("%d ", hk);
         return hk;
@@ -51,11 +49,12 @@ void addToHashTable(char v[], struct HashTable *ht)
     struct Node *head;
     if (v != NULL)
     {
-        int hk = hashKey(v, ht);
-        //Add node to end of linked list
+        int hk = hashKey(v, ht->size);
+        //Add node to hashtable at position determined by hashkey
         addToLinkedList(v, &(ht->hashtable[hk]));
     }
 }
+
 //Create a node for each name added
 struct Node *addName(char v[], struct Node *head)
 {
@@ -73,58 +72,63 @@ struct Node *addName(char v[], struct Node *head)
     }
 }
 
-struct Node *removeLastName(struct Node *head)
-{
-    if (head->next == NULL)
-    {
-        free(head);
-        return NULL;
-    }
-    else
-    {
-        head->next = removeLastName(head->next);
-        return head;
-    }
-}
-
 //Add names to linked list
 void addToLinkedList(char v[], struct LinkedList *list)
 {
     list->head = addName(v, list->head);
 }
 
-void removeLast(struct LinkedList *list)
+void removeFromHashTable(char v[], struct HashTable *ht)
 {
-    if (list->head == NULL)
+    struct Node *head;
+    if (v != NULL)
     {
-        return;
-    }
-    else
-    {
-        removeLastName(list->head);
+        int hk = hashKey(v, ht->size);
+        //Remove node from position in hashtable
+        struct LinkedList ll = ht->hashtable[hk];
+        struct Node *head = ll.head;
+        removeFromLinkedList(v, &ll);
     }
 }
 
-void printLinkedList(struct Node *name)
+//Add names to linked list
+void removeFromLinkedList(char v[], struct LinkedList *list)
 {
-    if (name == NULL)
-    {
-        printf("End\n");
-    }
-    else
-    {
-        printf("%s, ", name->value);
-        printLinkedList(name->next);
-    }
+    list->head = removeName(v, list->head);
 }
+
+struct Node * removeName(char v[], struct Node *head)
+{
+    struct Node * start = head;
+    if (strcmp(head->value, v) == 0) {
+        struct Node *tmp = head->next;
+        free(head);
+        return tmp;
+    }
+
+    while (head->next != NULL)
+    {
+        //Check that value is equal to v
+        if (strcmp(head->next->value, v) == 0)
+        {
+            struct Node *tmp = head->next;
+            head->next = head->next->next;
+            free(tmp);
+            break;
+        }
+        
+        head = head->next;
+    }
+    return start;
+}
+
 
 int searchNames(char v[], struct HashTable *ht)
 {
-
     //Check if name exists in the hash table
     if (v != NULL)
     {
-        int hk = hashKey(v, ht);
+        int hk = hashKey(v, ht->size);
         struct LinkedList ll = ht->hashtable[hk];
         struct Node *head = ll.head;
 
@@ -136,13 +140,9 @@ int searchNames(char v[], struct HashTable *ht)
                 printf("%s: Exists\n", v);
                 return 1;
             }
-            
+
             head = head->next;
         }
-
-        //Iterate through LinkedList to check if value exists
-        //return false;
-        //current = current->next
     }
 
     printf("%s: Does not exist\n", v);
@@ -154,25 +154,14 @@ int main(void)
     struct HashTable *ht = malloc(sizeof(struct HashTable));
     int size = 100;
     createHashTable(size, ht);
-    addToHashTable("A", ht);
+    addToHashTable("Anne", ht);
     addToHashTable("Emma", ht);
     addToHashTable("Lucy", ht);
     addToHashTable("Matt", ht);
-    searchNames("A", ht);
+    searchNames("Anne", ht);
     searchNames("Emma", ht);
     searchNames("Rach", ht);
-    // add("Evie", &list);
-    // printLinkedList(list.head);
-    // add("Cat", &list);
-    // printLinkedList(list.head);
-    // add("Tia", &list);
-    // printLinkedList(list.head);
-    // add("Libby", &list);
-    // printLinkedList(list.head);
-    // removeLast(&list);
-    // printLinkedList(list.head);
-    // removeLast(&list);
-    // printLinkedList(list.head);
-
+    removeFromHashTable("Anne", ht);
+    searchNames("Anne", ht);
     return 0;
 }
